@@ -7,13 +7,16 @@ public class ControllerArm : MonoBehaviour {
     public Transform boneHumerus;
     public Transform boneRadius;
 
-    public Slider boneAngle;
+    public Slider sliBoneAngle;
+    public Text txtBoneAngle;
 
     float angleCurrent;
 
 	// Use this for initialization
 	void Start () {
-        boneAngle.onValueChanged.AddListener(delegate { UpdateAngle(boneAngle.value); });
+        sliBoneAngle.onValueChanged.AddListener(delegate { UpdateAngle(sliBoneAngle.value); });
+
+        txtBoneAngle.text = "Degrees: " + angleCurrent.ToString();
 	}
 	
 	// Update is called once per frame
@@ -23,5 +26,6 @@ public class ControllerArm : MonoBehaviour {
 
     public void UpdateAngle(float value) {
         angleCurrent = value;
+        txtBoneAngle.text = "Degrees: " + angleCurrent.ToString();
     }
 }
