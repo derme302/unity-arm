@@ -1,18 +1,33 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(CsvReader))]
 public class ControllerPlayback : MonoBehaviour {
 
-    CsvReader csvReader;
+    public string shoulderDataFilename;
+    public string elbowDataFilename;
 
 	// Use this for initialization
     void Start() {
-        csvReader = gameObject.GetComponent<CsvReader>();
+
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update() {
 	
 	}
+
+    public void Setup() {
+        List<Dictionary<string, object>> shoulderData = CsvReader.Read(shoulderDataFilename);
+        List<Dictionary<string, object>> elbowData = CsvReader.Read(elbowDataFilename);
+
+    }
+
+    public void Play() {
+
+    }
+
+    public void Stop() {
+
+    }
 }
