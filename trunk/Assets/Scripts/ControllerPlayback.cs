@@ -5,10 +5,15 @@ using System.Collections.Generic;
 
 public class ControllerPlayback : MonoBehaviour {
 
-    public Transform point1;
-    public Transform point2;
-    public Transform point3;
+    // Bone Positions
+    public Transform bonePrefab;
+    Transform[] bones;
 
+    // Joint Positions
+    public Transform[] point;
+    int pointLength;
+
+    // UI to show current frame
     public Text frameCounter;
 
     public string shoulderDataFilename;
@@ -31,20 +36,55 @@ public class ControllerPlayback : MonoBehaviour {
     void Start() {
         frameLength = 1.0f / fps;
 
+        pointLength = point.Length;
+
+        bones = new Transform[pointLength];
+
+        for (int i = 0; i < (pointLength - 1); i++) {
+            bones[i] = Instantiate(bonePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as Transform;
+        }
+
         Setup();
     }
 	
 	// Update is called once per frame
 	void Update() {       
-        point1.position = Vector3.Lerp(point1.position, Vector3.zero, interpolation * Time.deltaTime);
-        point2.position = Vector3.Lerp(point2.position, shoulderPosition, interpolation * Time.deltaTime); 
-        point3.position = Vector3.Lerp(point3.position, elbowPosition, interpolation * Time.deltaTime); 
+        point[0].position = Vector3.Lerp(point[0].position, Vector3.zero, interpolation * Time.deltaTime);
+        point[1].position = Vector3.Lerp(point[1].position, shoulderPosition, interpolation * Time.deltaTime); 
+        point[2].position = Vector3.Lerp(point[2].position, elbowPosition, interpolation * Time.deltaTime);
+
+        Transform cylinderRef;
+        Transform spawn;
+        Transform target;
+
+        /* Update positions of Bones */
+        for (int i = 1; i < pointLength; i++) {
+
+            if (bones[i] == null)
+                Debug.Log("No bone at:" + i.ToString());
+
+            cylinderRef = bones[i];
+
+            int li = i - 1; // Previous i value
+
+            spawn = point[i];
+            target = point[li];
+
+            // Find the distance between 2 points
+            Vector3 newScale = cylinderRef.localScale;
+            newScale.z = Vector3.Distance(spawn.position, target.position) / 2;
+
+            cylinderRef.localScale = newScale;
+            cylinderRef.position = spawn.position;        // place bond here
+            cylinderRef.LookAt(target);                   // aim bond at positiion
+        }
 	}
 
     public void Setup() {
         shoulderData = CsvReader.Read(shoulderDataFilename);
         elbowData = CsvReader.Read(elbowDataFilename);
 
+        /* Verify data
         Debug.Log("Shoulder Data");
         for(var i=0; i < shoulderData.Count; i++) {
             print("x " + shoulderData[i]["x"] + " " +
@@ -58,6 +98,7 @@ public class ControllerPlayback : MonoBehaviour {
                    "y " + elbowData[i]["y"] + " " +
                    "z " + elbowData[i]["z"]);
         } 
+         * */
 
 
         animationLength = shoulderData.Count;
@@ -97,5 +138,7 @@ public class ControllerPlayback : MonoBehaviour {
 
     public void UpdateFrame(int value) {
         frame = value;
+
+        Playback();
     }
 }

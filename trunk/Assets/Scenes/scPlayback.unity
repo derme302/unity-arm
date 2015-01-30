@@ -372,9 +372,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e93bde45d578ac4c8a54baf54f89388, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  point1: {fileID: 476038076}
-  point2: {fileID: 1945591278}
-  point3: {fileID: 540292070}
+  bonePrefab: {fileID: 400000, guid: 80c7aba4dc5e55b4d84daed8e280d3f1, type: 3}
+  point:
+  - {fileID: 476038076}
+  - {fileID: 1945591278}
+  - {fileID: 540292070}
   frameCounter: {fileID: 1420237806}
   shoulderDataFilename: elbow
   elbowDataFilename: shoulder
