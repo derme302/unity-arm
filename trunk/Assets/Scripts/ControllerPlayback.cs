@@ -8,6 +8,7 @@ public class ControllerPlayback : MonoBehaviour {
     // Bone Positions
     public Transform bonePrefab;
     Transform[] bones;
+    int boneCount;
 
     // Joint Positions
     public Transform[] point;
@@ -38,37 +39,31 @@ public class ControllerPlayback : MonoBehaviour {
 
         pointLength = point.Length;
 
-        bones = new Transform[pointLength];
-
-        for (int i = 0; i < (pointLength - 1); i++) {
-            bones[i] = Instantiate(bonePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as Transform;
-        }
-
         Setup();
     }
 	
 	// Update is called once per frame
 	void Update() {       
         point[0].position = Vector3.Lerp(point[0].position, Vector3.zero, interpolation * Time.deltaTime);
-        point[1].position = Vector3.Lerp(point[1].position, shoulderPosition, interpolation * Time.deltaTime); 
-        point[2].position = Vector3.Lerp(point[2].position, elbowPosition, interpolation * Time.deltaTime);
+        point[1].position = Vector3.Lerp(point[1].position, elbowPosition, interpolation * Time.deltaTime); 
+        point[2].position = Vector3.Lerp(point[2].position, shoulderPosition, interpolation * Time.deltaTime);
 
         Transform cylinderRef;
         Transform spawn;
         Transform target;
 
         /* Update positions of Bones */
-        for (int i = 1; i < pointLength; i++) {
+        for (int i = 0; i < boneCount; i++) {
 
             if (bones[i] == null)
                 Debug.Log("No bone at:" + i.ToString());
 
             cylinderRef = bones[i];
 
-            int li = i - 1; // Previous i value
+            int ni = i + 1; // Next i value
 
             spawn = point[i];
-            target = point[li];
+            target = point[ni];
 
             // Find the distance between 2 points
             Vector3 newScale = cylinderRef.localScale;
@@ -100,16 +95,29 @@ public class ControllerPlayback : MonoBehaviour {
         } 
          * */
 
-
+        // Calcuate and log animation length
         animationLength = shoulderData.Count;
         Debug.Log("Animation: " + animationLength.ToString());
     }
 
     public void Play() {
+        // Reset frame to zero
         frame = 0;
 
+
+
+        // Create bones
+        boneCount = pointLength - 1;
+        bones = new Transform[boneCount];
+
+        for (int i = 0; i < boneCount; i++) {
+            bones[i] = Instantiate(bonePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as Transform;
+        }
+
+        // Set playback to play a the set fps
         InvokeRepeating("Playback", frameLength, frameLength);
 
+        // Display current frame in UI
         frameCounter.text = frame.ToString() + "/" + animationLength.ToString();
         Debug.Log("Animation Started");
     }
