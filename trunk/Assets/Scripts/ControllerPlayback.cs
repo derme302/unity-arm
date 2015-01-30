@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 
@@ -8,9 +9,12 @@ public class ControllerPlayback : MonoBehaviour {
     public Transform point2;
     public Transform point3;
 
+    public Text frameCounter;
+
     public string shoulderDataFilename;
     public string elbowDataFilename;
     public int fps;
+    public float interpolation;
 
     int animationLength;
 
@@ -25,16 +29,16 @@ public class ControllerPlayback : MonoBehaviour {
 
 	// Use this for initialization
     void Start() {
-        frameLength = 1 / fps;
+        frameLength = 1.0f / fps;
 
         Setup();
     }
 	
 	// Update is called once per frame
-	void Update() {
-        point1.position = Vector3.zero;
-        point2.position = shoulderPosition;
-        point3.position = elbowPosition;
+	void Update() {       
+        point1.position = Vector3.Lerp(point1.position, Vector3.zero, interpolation * Time.deltaTime);
+        point2.position = Vector3.Lerp(point2.position, shoulderPosition, interpolation * Time.deltaTime); 
+        point3.position = Vector3.Lerp(point3.position, elbowPosition, interpolation * Time.deltaTime); 
 	}
 
     public void Setup() {
@@ -63,8 +67,9 @@ public class ControllerPlayback : MonoBehaviour {
     public void Play() {
         frame = 0;
 
-        InvokeRepeating("Playback", 1.0f, 0.25f);
+        InvokeRepeating("Playback", frameLength, frameLength);
 
+        frameCounter.text = frame.ToString() + "/" + animationLength.ToString();
         Debug.Log("Animation Started");
     }
 
@@ -81,6 +86,7 @@ public class ControllerPlayback : MonoBehaviour {
         elbowPosition.y = Convert.ToSingle(elbowData[frame]["y"]);
         elbowPosition.z = Convert.ToSingle(elbowData[frame]["z"]);
 
+        frameCounter.text = frame.ToString() + "/" + animationLength.ToString();
         frame ++;
     }
 
