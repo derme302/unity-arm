@@ -14,8 +14,9 @@ public class ControllerPlayback : MonoBehaviour {
     public Transform[] point;                           // Array to hold all handles of the joint transforms
     int pointLength;                                    // Ammount of joints in the animation (automatically calculated from inspector)
 
-    // UI to show current frame
+    // UI
     public Text frameCounter;                           // UI element to display <currrentFrame>/<totalFrames>
+    public Slider frameSlider;                          // UI element to change the current frame
 
     public string shoulderDataFilename;                 // Name of the CSV where the shoulder data positions are
     public string elbowDataFilename;                    // Name of the CSV where the elbow data positions are
@@ -38,6 +39,8 @@ public class ControllerPlayback : MonoBehaviour {
     void Start() {
         // Calculte the length of a frame (in seconds) based off the fps
         frameLength = 1.0f / fps;
+
+        frameSlider.onValueChanged.AddListener(delegate { UpdateFrame((int)frameSlider.value); });
 
         // Retrieve the length of the joint array from what has been set in the inspector
         pointLength = point.Length;
@@ -146,6 +149,7 @@ public class ControllerPlayback : MonoBehaviour {
 
         // Display current frame in UI
         frameCounter.text = frame.ToString() + "/" + animationLength.ToString();
+        frameSlider.value = frame;
 
         // Increment frame
         frame ++;
