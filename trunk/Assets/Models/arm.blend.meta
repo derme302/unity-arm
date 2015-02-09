@@ -1,14 +1,22 @@
 fileFormatVersion: 2
-guid: 80c7aba4dc5e55b4d84daed8e280d3f1
+guid: 69dabf75a07ca7440ab36148c685c9d9
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
     100000: //RootNode
+    100002: BottomBones
+    100004: TopBone
     400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Cylinder
-    4300002: TopBone
+    400002: BottomBones
+    400004: TopBone
+    2300000: BottomBones
+    2300002: TopBone
+    2300004: //RootNode
+    3300000: BottomBones
+    3300002: TopBone
+    3300004: //RootNode
+    4300000: TopBone
+    4300002: BottomBones
     7400000: Default Take
     9500000: //RootNode
   materials:

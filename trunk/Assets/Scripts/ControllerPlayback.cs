@@ -7,6 +7,7 @@ public class ControllerPlayback : MonoBehaviour {
 
     // Bone Positions
     public Transform bonePrefab;                        // Prefab to use for the bone model
+    public Transform bonePrefabBase;                    // Prefab to hold the lower portion of the arm
     Transform[] bones;                                  // Array to hold all handles of the bone transforms
     int boneCount;                                      // Ammount of bones in the animation (automatically calculted)
 
@@ -119,9 +120,12 @@ public class ControllerPlayback : MonoBehaviour {
         boneCount = pointLength - 1;
         bones = new Transform[boneCount];
 
-        for (int i = 0; i < boneCount; i++) {
-            bones[i] = Instantiate(bonePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as Transform;
-        }
+        bones[0] = Instantiate(bonePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as Transform;
+        bones[1] = Instantiate(bonePrefabBase, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as Transform;
+
+        //for (int i = 0; i < boneCount; i++) {
+            //bones[i] = Instantiate(bonePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity) as Transform;
+        //}
 
         // Set playback to play a the set fps
         InvokeRepeating("Playback", frameLength, frameLength);
